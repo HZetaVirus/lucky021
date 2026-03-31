@@ -58,6 +58,7 @@ import { AuthService } from '../../../core/services/auth.service';
             <span></span><span></span><span></span>
           </button>
         </div>
+      </div>
     </header>
 
     <!-- Mobile Menu -->
