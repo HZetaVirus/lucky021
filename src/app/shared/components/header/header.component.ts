@@ -58,27 +58,26 @@ import { AuthService } from '../../../core/services/auth.service';
             <span></span><span></span><span></span>
           </button>
         </div>
-      </div>
-
-      <!-- Mobile Menu -->
-      @if (mobileOpen()) {
-        <div class="mobile-menu" (click)="closeMobile()">
-          <nav class="mobile-nav" (click)="$event.stopPropagation()">
-            <a routerLink="/" (click)="closeMobile()">♠ Início</a>
-            <a routerLink="/catalogo" (click)="closeMobile()">♥ Catálogo</a>
-            <a routerLink="/catalogo" [queryParams]="{filtro:'novidades'}" (click)="closeMobile()">♦ Novidades</a>
-            <a routerLink="/catalogo" [queryParams]="{filtro:'promocoes'}" (click)="closeMobile()">♣ Promoções</a>
-            <div class="mobile-nav-divider"></div>
-            @if (auth.isLoggedIn()) {
-              <a [routerLink]="auth.isAdmin() ? '/admin' : '/minha-conta'" (click)="closeMobile()">🂡 Minha Conta</a>
-            } @else {
-              <a routerLink="/login" (click)="closeMobile()">Entrar</a>
-              <a routerLink="/cadastro" (click)="closeMobile()">Cadastrar</a>
-            }
-          </nav>
-        </div>
-      }
     </header>
+
+    <!-- Mobile Menu -->
+    @if (mobileOpen()) {
+      <div class="mobile-menu" (click)="closeMobile()">
+        <nav class="mobile-nav" (click)="$event.stopPropagation()">
+          <a routerLink="/" (click)="closeMobile()">♠ Início</a>
+          <a routerLink="/catalogo" (click)="closeMobile()">♥ Catálogo</a>
+          <a routerLink="/catalogo" [queryParams]="{filtro:'novidades'}" (click)="closeMobile()">♦ Novidades</a>
+          <a routerLink="/catalogo" [queryParams]="{filtro:'promocoes'}" (click)="closeMobile()">♣ Promoções</a>
+          <div class="mobile-nav-divider"></div>
+          @if (auth.isLoggedIn()) {
+            <a [routerLink]="auth.isAdmin() ? '/admin' : '/minha-conta'" (click)="closeMobile()">🂡 Minha Conta</a>
+          } @else {
+            <a routerLink="/login" (click)="closeMobile()">Entrar</a>
+            <a routerLink="/cadastro" (click)="closeMobile()">Cadastrar</a>
+          }
+        </nav>
+      </div>
+    }
   `,
   styles: [`
     .header {
