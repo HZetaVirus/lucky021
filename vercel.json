@@ -1,5 +1,4 @@
 {
-  "outputDirectory": "dist/admin-loja/browser",
   "rewrites": [
     {
       "source": "/(.*)",
