@@ -1,0 +1,84 @@
+<div class="carrinho-page page-enter">
+  <div class="container">
+    <div class="suit-separator">♠ ♥ ♦ ♣</div>
+    <h1>Seu Deck</h1>
+
+    @if (carrinho.cartCount() > 0) {
+      <div class="carrinho-layout">
+        <!-- Items -->
+        <div class="cart-items">
+          @for (item of carrinho.cartItems(); track $index; let i = $index) {
+            <div class="cart-item playing-card">
+              <div class="cart-item-image">
+                <span class="item-suit">♠</span>
+              </div>
+              <div class="cart-item-details">
+                <h3>{{ item.nome }}</h3>
+                <p class="text-muted">Tamanho: {{ item.tamanho }} | Cor: {{ item.cor }}</p>
+                <span class="price-current">R$ {{ item.preco.toFixed(2) }}</span>
+              </div>
+              <div class="cart-item-qty">
+                <button class="qty-btn" (click)="carrinho.updateQuantity(i, item.quantidade - 1)">−</button>
+                <span class="qty-value">{{ item.quantidade }}</span>
+                <button class="qty-btn" (click)="carrinho.updateQuantity(i, item.quantidade + 1)">+</button>
+              </div>
+              <div class="cart-item-total">
+                <span class="price-current">R$ {{ (item.preco * item.quantidade).toFixed(2) }}</span>
+              </div>
+              <button class="remove-btn" (click)="carrinho.removeItem(i)" aria-label="Remover">✕</button>
+            </div>
+          }
+        </div>
+
+        <!-- Summary -->
+        <aside class="cart-summary">
+          <div class="summary-card gold-border">
+            <h3 class="summary-title">🂡 Resumo da Aposta</h3>
+
+            <!-- Free shipping progress -->
+            <div class="shipping-progress">
+              @if (!carrinho.hasFreeShipping()) {
+                <p class="shipping-text">Faltam <strong class="text-gold">R$ {{ carrinho.freeShippingRemaining().toFixed(2) }}</strong> para frete grátis!</p>
+              } @else {
+                <p class="shipping-text text-gold">🎉 Frete grátis desbloqueado!</p>
+              }
+              <div class="progress-bar">
+                <div class="progress-bar-fill" [style.width.%]="freeShippingPercent"></div>
+              </div>
+            </div>
+
+            <div class="summary-row">
+              <span>Subtotal</span>
+              <span>R$ {{ carrinho.subtotal().toFixed(2) }}</span>
+            </div>
+            <div class="summary-row">
+              <span>Frete</span>
+              <span [class.text-gold]="carrinho.hasFreeShipping()">
+                {{ carrinho.hasFreeShipping() ? 'GRÁTIS' : 'R$ ' + shippingCost.toFixed(2) }}
+              </span>
+            </div>
+            <div class="gold-divider"></div>
+            <div class="summary-row summary-total">
+              <span>Total</span>
+              <span class="text-gold">R$ {{ total.toFixed(2) }}</span>
+            </div>
+
+            <a routerLink="/checkout" class="btn btn-primary btn-large" style="width:100%; margin-top:1.5rem">
+              FINALIZAR APOSTA ♠
+            </a>
+            <a routerLink="/catalogo" class="btn btn-secondary btn-small" style="width:100%; margin-top:0.75rem">
+              Continuar Comprando
+            </a>
+          </div>
+        </aside>
+      </div>
+    } @else {
+      <div class="empty-cart">
+        <span class="empty-icon">🃏</span>
+        <h2>Seu deck está vazio</h2>
+        <p class="text-muted">Adicione peças ao seu deck para começar a apostar no estilo!</p>
+        <a routerLink="/catalogo" class="btn btn-primary btn-large">VER CATÁLOGO</a>
+      </div>
+    }
+  </div>
+</div>

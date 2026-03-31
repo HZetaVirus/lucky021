@@ -1,0 +1,146 @@
+<div class="checkout-page page-enter">
+  <div class="container">
+    @if (!confirmed()) {
+      <!-- Progress Bar -->
+      <div class="checkout-progress">
+        <div class="progress-step" [class.active]="step() >= 1" [class.done]="step() > 1">
+          <span class="step-icon">♠</span>
+          <span class="step-label">Endereço</span>
+        </div>
+        <div class="progress-line" [class.active]="step() > 1"></div>
+        <div class="progress-step" [class.active]="step() >= 2" [class.done]="step() > 2">
+          <span class="step-icon">♥</span>
+          <span class="step-label">Pagamento</span>
+        </div>
+        <div class="progress-line" [class.active]="step() > 2"></div>
+        <div class="progress-step" [class.active]="step() >= 3">
+          <span class="step-icon">♦</span>
+          <span class="step-label">Confirmação</span>
+        </div>
+      </div>
+
+      <div class="checkout-layout">
+        <div class="checkout-form">
+          <!-- Step 1: Address -->
+          @if (step() === 1) {
+            <div class="step-content fade-in-up visible">
+              <h2>♠ Endereço de Entrega</h2>
+              <div class="form-row">
+                <div class="form-group" style="flex:1">
+                  <label class="form-label">CEP</label>
+                  <input class="form-input" [(ngModel)]="cep" (blur)="buscarCep()" placeholder="00000-000" id="checkout-cep">
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Logradouro</label>
+                <input class="form-input" [(ngModel)]="logradouro" placeholder="Rua, Avenida..." id="checkout-logradouro">
+              </div>
+              <div class="form-row">
+                <div class="form-group" style="flex:0.3">
+                  <label class="form-label">Número</label>
+                  <input class="form-input" [(ngModel)]="numero" id="checkout-numero">
+                </div>
+                <div class="form-group" style="flex:0.7">
+                  <label class="form-label">Complemento</label>
+                  <input class="form-input" [(ngModel)]="complemento" placeholder="Apto, bloco...">
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group" style="flex:1">
+                  <label class="form-label">Bairro</label>
+                  <input class="form-input" [(ngModel)]="bairro">
+                </div>
+                <div class="form-group" style="flex:1">
+                  <label class="form-label">Cidade</label>
+                  <input class="form-input" [(ngModel)]="cidade">
+                </div>
+                <div class="form-group" style="flex:0.3">
+                  <label class="form-label">UF</label>
+                  <input class="form-input" [(ngModel)]="estado">
+                </div>
+              </div>
+              <button class="btn btn-primary btn-large" (click)="nextStep()">CONTINUAR ♥ →</button>
+            </div>
+          }
+
+          <!-- Step 2: Payment -->
+          @if (step() === 2) {
+            <div class="step-content fade-in-up visible">
+              <h2>♥ Forma de Pagamento</h2>
+              <div class="payment-options">
+                <button class="payment-option" [class.active]="pagamento() === 'pix'" (click)="pagamento.set('pix')">
+                  <span class="payment-icon">💠</span>
+                  <span>PIX</span>
+                  <span class="payment-discount chip chip-gold">5% OFF</span>
+                </button>
+                <button class="payment-option" [class.active]="pagamento() === 'cartao'" (click)="pagamento.set('cartao')">
+                  <span class="payment-icon">💳</span>
+                  <span>Cartão de Crédito</span>
+                </button>
+                <button class="payment-option" [class.active]="pagamento() === 'boleto'" (click)="pagamento.set('boleto')">
+                  <span class="payment-icon">📄</span>
+                  <span>Boleto Bancário</span>
+                </button>
+              </div>
+              <div class="step-actions">
+                <button class="btn btn-secondary" (click)="prevStep()">← VOLTAR</button>
+                <button class="btn btn-primary btn-large" (click)="nextStep()">CONFIRMAR ♦ →</button>
+              </div>
+            </div>
+          }
+
+          <!-- Step 3: Confirmation -->
+          @if (step() === 3) {
+            <div class="step-content fade-in-up visible">
+              <h2>♦ Confirme seu Pedido</h2>
+              <div class="confirmation-summary">
+                <div class="confirm-section">
+                  <h4>📍 Endereço</h4>
+                  <p>{{ logradouro }}, {{ numero }} {{ complemento }}</p>
+                  <p>{{ bairro }} — {{ cidade }}/{{ estado }}</p>
+                  <p>CEP: {{ cep }}</p>
+                </div>
+                <div class="confirm-section">
+                  <h4>💰 Pagamento</h4>
+                  <p>{{ pagamento() === 'pix' ? 'PIX' : pagamento() === 'cartao' ? 'Cartão de Crédito' : 'Boleto Bancário' }}</p>
+                </div>
+                <div class="confirm-section">
+                  <h4>🛍️ Itens ({{ carrinho.cartCount() }})</h4>
+                  @for (item of carrinho.cartItems(); track $index) {
+                    <p>{{ item.nome }} ({{ item.tamanho }}) x{{ item.quantidade }} — R$ {{ (item.preco * item.quantidade).toFixed(2) }}</p>
+                  }
+                </div>
+              </div>
+              <div class="step-actions">
+                <button class="btn btn-secondary" (click)="prevStep()">← VOLTAR</button>
+                <button class="btn btn-primary btn-large" (click)="confirmarPedido()" [disabled]="loading()">
+                  {{ loading() ? '🎲 Processando...' : 'FINALIZAR APOSTA ♠' }}
+                </button>
+              </div>
+            </div>
+          }
+        </div>
+
+        <!-- Order Summary Sidebar -->
+        <aside class="checkout-summary">
+          <div class="summary-card gold-border">
+            <h3>🂡 Resumo</h3>
+            <div class="summary-row"><span>Subtotal</span><span>R$ {{ carrinho.subtotal().toFixed(2) }}</span></div>
+            <div class="summary-row"><span>Frete</span><span>{{ carrinho.hasFreeShipping() ? 'GRÁTIS' : 'R$ 19.90' }}</span></div>
+            <div class="gold-divider"></div>
+            <div class="summary-row summary-total"><span>Total</span><span class="text-gold">R$ {{ total.toFixed(2) }}</span></div>
+          </div>
+        </aside>
+      </div>
+    } @else {
+      <!-- Confirmation Screen -->
+      <div class="order-confirmed">
+        <div class="confirm-animation">🂡</div>
+        <h1>Aposta Confirmada! 🎰</h1>
+        <p>Seu pedido foi recebido com sucesso. Você receberá um email com os detalhes.</p>
+        <p class="order-number">Pedido #{{ Math.floor(Math.random() * 99999) }}</p>
+        <a routerLink="/" class="btn btn-primary btn-large">VOLTAR À HOME</a>
+      </div>
+    }
+  </div>
+</div>

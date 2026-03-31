@@ -1,0 +1,82 @@
+<div class="catalogo-page page-enter">
+  <div class="page-header">
+    <div class="container">
+      <div class="suit-separator">♠ ♥ ♦ ♣</div>
+      <h1>Catálogo</h1>
+      <p class="text-muted">Explore todas as cartas do nosso deck</p>
+    </div>
+  </div>
+
+  <div class="container catalogo-layout">
+    <aside class="filters-sidebar hide-mobile">
+      <div class="filter-section">
+        <h4 class="filter-title">Categorias</h4>
+        <div class="filter-options">
+          <button class="filter-option" [class.active]="!selectedCategory()" (click)="setCategory('')">
+            <span class="filter-suit">🂡</span> Todas
+          </button>
+          @for (cat of categories; track cat.slug) {
+            <button class="filter-option" [class.active]="selectedCategory() === cat.slug" (click)="setCategory(cat.slug)">
+              <span class="filter-suit" [class]="cat.suitColor">{{ cat.suit }}</span> {{ cat.nome }}
+            </button>
+          }
+        </div>
+      </div>
+      <div class="gold-divider"></div>
+      <div class="filter-section">
+        <h4 class="filter-title">Ordenar</h4>
+        <div class="filter-options">
+          <button class="filter-option" [class.active]="sortBy() === 'recente'" (click)="setSort('recente')">Mais Recentes</button>
+          <button class="filter-option" [class.active]="sortBy() === 'menor'" (click)="setSort('menor')">Menor Preço</button>
+          <button class="filter-option" [class.active]="sortBy() === 'maior'" (click)="setSort('maior')">Maior Preço</button>
+        </div>
+      </div>
+    </aside>
+
+    <div class="products-area">
+      <div class="search-bar">
+        <input type="text" class="form-input search-input" placeholder="🔍 Buscar peças..." [(ngModel)]="searchQuery" (ngModelChange)="applyFilters()" id="catalogo-search">
+        <span class="results-count text-muted">{{ filteredProducts().length }} peças</span>
+      </div>
+
+      <div class="products-grid">
+        @for (product of filteredProducts(); track product.id; let i = $index) {
+          <div class="product-card playing-card" [style.animation-delay]="(i * 0.08) + 's'">
+            <span class="card-suit-tl" [class]="product.naipeCor">{{ product.naipe }}</span>
+            <span class="card-suit-br" [class]="product.naipeCor">{{ product.naipe }}</span>
+            @if (product.novo) { <span class="product-badge badge-new">NOVO</span> }
+            @if (product.promocao) { <span class="product-badge badge-promo">-30%</span> }
+            <div class="product-image">
+              <div class="product-image-placeholder">
+                <span class="placeholder-suit" [class]="product.naipeCor">{{ product.naipe }}</span>
+                <span class="placeholder-text">{{ product.nome }}</span>
+              </div>
+            </div>
+            <div class="product-info">
+              <span class="product-category">{{ product.categoria }}</span>
+              <h3 class="product-name">{{ product.nome }}</h3>
+              <div class="product-price">
+                @if (product.promocao) {
+                  <span class="price-old">R$ {{ product.preco.toFixed(2) }}</span>
+                  <span class="price-current text-red">R$ {{ product.preco_promocional.toFixed(2) }}</span>
+                } @else {
+                  <span class="price-current">R$ {{ product.preco.toFixed(2) }}</span>
+                }
+              </div>
+              <div class="product-actions">
+                <button class="btn btn-primary btn-small" (click)="addToCart(product)">COMPRAR</button>
+                <a [routerLink]="['/produto', product.id]" class="btn btn-secondary btn-small">VER</a>
+              </div>
+            </div>
+          </div>
+        } @empty {
+          <div class="empty-state">
+            <span class="empty-icon">🃏</span>
+            <h3>Nenhuma carta encontrada</h3>
+            <p class="text-muted">Tente ajustar seus filtros</p>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,120 @@
+@if (product(); as p) {
+<div class="produto-page page-enter">
+  <div class="container produto-layout">
+    <!-- Image Gallery -->
+    <div class="produto-gallery">
+      <div class="gallery-main playing-card gold-border">
+        <span class="card-suit-tl">{{ p.naipe }}</span>
+        <span class="card-suit-br">{{ p.naipe }}</span>
+        <div class="gallery-image-placeholder">
+          <span class="placeholder-suit-big" [class]="p.naipeCor">{{ p.naipe }}</span>
+          <span class="placeholder-label">{{ p.nome }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Product Info -->
+    <div class="produto-details">
+      <span class="produto-cat">{{ p.categoria }}</span>
+      <h1 class="produto-name">{{ p.nome }}</h1>
+
+      <div class="produto-rating">
+        <span class="stars-display">
+          @for (s of [1,2,3,4,5]; track s) {
+            <span class="star" [class.filled]="s <= Math.round(p.avaliacoes)">★</span>
+          }
+        </span>
+        <span class="rating-text">{{ p.avaliacoes }} ({{ p.numAvaliacoes }} avaliações)</span>
+      </div>
+
+      <div class="produto-price-section">
+        @if (p.preco_promocional) {
+          <span class="price-old-big">R$ {{ p.preco.toFixed(2) }}</span>
+          <span class="price-big text-red">R$ {{ p.preco_promocional.toFixed(2) }}</span>
+        } @else {
+          <span class="price-big">R$ {{ p.preco.toFixed(2) }}</span>
+        }
+        <span class="price-installment text-muted">ou 3x de R$ {{ (p.preco / 3).toFixed(2) }} sem juros</span>
+      </div>
+
+      <div class="gold-divider"></div>
+
+      <!-- Size Selector -->
+      <div class="selector-section">
+        <label class="selector-label">Tamanho: <strong>{{ selectedSize() }}</strong></label>
+        <div class="size-options">
+          @for (size of sizes; track size) {
+            <button class="size-chip" [class.active]="selectedSize() === size" (click)="selectSize(size)">
+              {{ size }}
+            </button>
+          }
+        </div>
+      </div>
+
+      <!-- Color Selector -->
+      <div class="selector-section">
+        <label class="selector-label">Cor: <strong>{{ selectedColor() }}</strong></label>
+        <div class="color-options">
+          @for (color of colors; track color.nome) {
+            <button class="color-swatch" [class.active]="selectedColor() === color.nome"
+              [style.background]="color.hex" (click)="selectColor(color.nome)"
+              [attr.aria-label]="color.nome"></button>
+          }
+        </div>
+      </div>
+
+      <!-- Quantity -->
+      <div class="selector-section">
+        <label class="selector-label">Quantidade</label>
+        <div class="qty-control">
+          <button class="qty-btn" (click)="decrementQty()">−</button>
+          <span class="qty-value">{{ quantity() }}</span>
+          <button class="qty-btn" (click)="incrementQty()">+</button>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="produto-actions">
+        <button class="btn btn-primary btn-large" (click)="addToCart()" id="product-add-cart">
+          ADICIONAR AO DECK
+        </button>
+        <button class="btn btn-dark btn-large" (click)="buyNow()" id="product-buy-now">
+          COMPRAR AGORA
+        </button>
+      </div>
+
+      <div class="stock-info">
+        <span class="chip chip-gold">♠ {{ p.estoque }} em estoque</span>
+      </div>
+
+      <!-- Description -->
+      <div class="produto-desc">
+        <h3>Descrição</h3>
+        <p>{{ p.descricao }}</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Related Products -->
+  <section class="related-section section">
+    <div class="container">
+      <h2>Cartas <span class="text-gold">Relacionadas</span></h2>
+      <div class="related-grid">
+        @for (rp of relatedProducts; track rp.id) {
+          <a [routerLink]="['/produto', rp.id]" class="related-card playing-card">
+            <span class="card-suit-tl" [class]="rp.naipeCor">{{ rp.naipe }}</span>
+            <div class="related-image">
+              <span class="placeholder-suit" [class]="rp.naipeCor">{{ rp.naipe }}</span>
+            </div>
+            <div class="related-info">
+              <span class="product-category">{{ rp.categoria }}</span>
+              <h4>{{ rp.nome }}</h4>
+              <span class="price-current">R$ {{ rp.preco.toFixed(2) }}</span>
+            </div>
+          </a>
+        }
+      </div>
+    </div>
+  </section>
+</div>
+}
