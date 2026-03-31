@@ -23,8 +23,8 @@ export class AppwriteService {
 
   constructor() {
     this.client = new Client()
-      .setEndpoint(environment.appwriteEndpoint)
-      .setProject(environment.appwriteProjectId);
+      .setEndpoint(environment.appwriteUrl)
+      .setProject(environment.appwriteProject);
 
     this.account = new Account(this.client);
     this.databases = new Databases(this.client);
@@ -33,10 +33,10 @@ export class AppwriteService {
 
   // Helper to get image URL from storage
   getFilePreview(fileId: string, width = 400, height = 500): string {
-    return `${environment.appwriteEndpoint}/storage/buckets/${this.bucketId}/files/${fileId}/preview?width=${width}&height=${height}&project=${environment.appwriteProjectId}`;
+    return `${environment.appwriteUrl}/storage/buckets/${this.bucketId}/files/${fileId}/preview?width=${width}&height=${height}&project=${environment.appwriteProject}`;
   }
 
   getFileView(fileId: string): string {
-    return `${environment.appwriteEndpoint}/storage/buckets/${this.bucketId}/files/${fileId}/view?project=${environment.appwriteProjectId}`;
+    return `${environment.appwriteUrl}/storage/buckets/${this.bucketId}/files/${fileId}/view?project=${environment.appwriteProject}`;
   }
 }
