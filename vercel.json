@@ -1,0 +1,9 @@
+{
+  "outputDirectory": "dist/admin-loja/browser",
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}
